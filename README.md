@@ -165,6 +165,24 @@ that is smooth, the cost is the three work-card canvases; if it is not, a single
 2-pass field is already your GPU's limit and the fix has to be resolution
 (which the library does not expose) rather than layer count.
 
+## A trap worth knowing about
+
+`MeshGradient` carries a `stops` prop that ships with a **rainbow** default
+(`#1a0533 → #6d2fd1 → #e04b9e → #ff8c42 → #ffdf8e`) and is documented as
+*"overrides Color A / Color B when set"*. Passing only `colorA`/`colorB` — as
+the component's own prop list invites you to — therefore renders purple and
+magenta regardless of what you asked for, and nothing warns you.
+
+The close of this page writes `stops` out explicitly (`meshStops()` in
+`src/gl.js`), weighted to the dark end so the bone headline stays legible, and
+the re-roll updates `stops` rather than `colorA`/`colorB` — updating the
+ignored props would have left the previous ramp's mesh on screen. The stop
+*count* is what triggers a recompile, so keeping four stops means recolouring
+works at runtime.
+
+Every other component used here takes its colours directly, so this was the
+only one with the trap.
+
 ## Accessibility & performance
 
 - Focus-visible rings, a skip link, semantic landmarks, `aria-label`s on the

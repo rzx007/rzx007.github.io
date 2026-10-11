@@ -52,6 +52,25 @@ export const RAMPS = [
 /** Which ramp a seed selects. Stable, and spread across all five. */
 export const rampFor = (a) => RAMPS[Math.floor(a.temp) % RAMPS.length]
 
+/**
+ * MeshGradient's stops, written out explicitly.
+ *
+ * This prop is a trap: it ships with a rainbow default and *overrides*
+ * colorA/colorB whenever it is set, so a tree that only passes colorA/colorB
+ * renders purple-and-magenta no matter what colours it asked for. It is also
+ * weighted to the dark end on purpose — the close has a bone headline sitting
+ * on this field, and a bright mesh makes it unreadable.
+ *
+ * The stop *count* is what triggers a recompile (the library checks length),
+ * so keeping four stops means a re-roll can recolour the field at runtime.
+ */
+export const meshStops = (r) => [
+  { color: r.deep, position: 0 },
+  { color: r.deep, position: 0.2 },
+  { color: r.mid, position: 0.64 },
+  { color: r.ember, position: 1 },
+]
+
 /* ── component trees ─────────────────────────────────────────────
    Layer order matters: components draw first-to-last, so an effect placed
    later grades everything drawn before it. Keep the counts small. */
@@ -131,15 +150,23 @@ export function fieldTrees(r, seedValue) {
       ],
     },
 
-    /* 98 — the close. Hottest chapter, and a single mesh gradient is enough
-       to carry it: 1 pass on the second full-viewport canvas. */
+    /* 98 — the close. Hottest chapter.
+       MeshGradient carries a `stops` prop whose shipped default is a rainbow
+       (#1a0533 → #6d2fd1 → #e04b9e → #ff8c42 → #ffdf8e) and it *overrides*
+       colorA/colorB whenever it is set — so passing only colorA/colorB
+       silently renders the rainbow. The stops are therefore written out
+       explicitly, weighted to the dark end: the field reads as deep ember with
+       heat concentrated in it, not as a bright wash, which is also what keeps
+       the bone headline legible on top. */
     outro: {
       still: false,
       components: [
         { type: 'MeshGradient', id: 'outMesh', props: {
-          colorA: r.deep, colorB: r.pale, colorSpace: 'oklab',
-          count: 5, smoothness: 2, variation: 0.42, swirl: 0.34,
-          drift: 0.52, wrapping: 0.2, speed: 0.5, seed: seedValue,
+          stops: meshStops(r),
+          colorA: r.deep, colorB: r.ember,
+          colorSpace: 'oklab',
+          count: 4, smoothness: 2.2, variation: 0.34,
+          swirl: 0.32, drift: 0.46, wrapping: 0, speed: 0.45, seed: seedValue,
         } },
       ],
     },
@@ -156,7 +183,9 @@ export function colourPatch(r) {
     w2Lines:    { lineColor: r.ember },
     w3Worley:   { colorA: '#F2E4D2', colorB: r.deep },
     w3Half:     { blackColor: r.pale, cyanColor: r.ember, magentaColor: r.mid, yellowColor: r.bone },
-    outMesh:    { colorA: r.deep, colorB: r.pale },
+    // Stops, not colorA/colorB: those are ignored while stops are set, which
+    // would leave a re-roll showing the previous ramp's mesh.
+    outMesh:    { stops: meshStops(r), colorA: r.deep, colorB: r.ember },
   }
 }
 
