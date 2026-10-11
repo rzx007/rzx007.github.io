@@ -14,7 +14,7 @@ import { rampFor, mountFields, recolour } from './gl.js'
 import {
   gsap, ScrollTrigger, prefersReduced, createSmoothScroll, playIntro,
   buildDecorativeScenes, buildPassiveScenes, replayDerived, revealEverything,
-  countTo,
+  countTo, guardMaskedHeadings,
 } from './motion.js'
 import {
   runEntry, initCursor, initMagnets, initCopyMail, bindReroll, setBusy,
@@ -199,6 +199,21 @@ async function boot() {
 
   const loaderCells = renderLoaderStrip(document.getElementById('preStrip'), analysis)
 
+  /* ?only=<section> isolates one section at the top of the page.
+     This MUST run before any scene is built: collapsing the document with
+     `display: none` after ScrollTrigger has measured its trigger positions
+     leaves every cached position wrong, so the reveals silently never fire.
+     Applying it first means scenes are measured against the layout they will
+     actually run in. */
+  const only = params.get('only')
+  if (only) {
+    document.querySelectorAll('main > section').forEach((section) => {
+      if (section.id !== only) section.style.display = 'none'
+    })
+    const foot = document.querySelector('.foot')
+    if (foot && only !== 'contact') foot.style.display = 'none'
+  }
+
   initCursor()
   initMagnets()
   initCopyMail()
@@ -260,10 +275,41 @@ async function boot() {
   await Promise.all([runEntry(analysis, loaderCells, { reduced }), fonts])
 
   if (lenis) lenis.start()
+  const intro = reduced ? null : playIntro(nodes)
   if (reduced) revealEverything(nodes)
-  else playIntro(nodes)
+
+  // Nothing masked may stay hidden once it is on screen. Cheap, and it fails
+  // loudly instead of shipping an invisible heading.
+  guardMaskedHeadings()
 
   ScrollTrigger.refresh()
+
+  /* ?audit=1 reports why things are or are not visible, on screen, so a
+     headless screenshot can carry the answer instead of a guess. Driven by the
+     GSAP ticker because timers are throttled in headless virtual time. */
+  if (params.get('audit')) {
+    gsap.delayedCall(6, () => {
+      const read = (sel, prop) => {
+        const node = document.querySelector(sel)
+        if (!node) return 'missing'
+        return getComputedStyle(node)[prop]
+      }
+      const lines = [
+        `reduced=${reduced}  intro=${intro ? `${intro.time().toFixed(2)}s/${intro.progress().toFixed(2)}` : 'none'}`,
+        `stuckLines=${document.documentElement.dataset.stuckLines ?? '0'}`,
+        `.hero__title .ln>i  transform = ${read('.hero__title .ln > i', 'transform')}`,
+        `.hero .eyebrow      opacity   = ${read('.hero .eyebrow', 'opacity')}`,
+        `.ledger__r dd       text      = ${document.querySelector('#ledger dd')?.textContent}`,
+        `#fieldHero          transform = ${read('#fieldHero', 'transform')}`,
+        `fields=${document.documentElement.dataset.fields ?? '-'}  frozen=${document.documentElement.dataset.frozen ?? '-'}  q=${document.documentElement.dataset.quality ?? '-'}`,
+      ]
+      const pre = document.getElementById('pre')
+      if (pre) {
+        pre.style.cssText += ';display:block;opacity:1;animation:none;position:fixed;inset:0;background:#08090A;color:#EFEAE1;font:12px/1.7 monospace;white-space:pre-wrap;padding:16px;z-index:99999'
+        pre.textContent = lines.join('\n')
+      }
+    })
+  }
 
   /* Verification affordances. These run before the GPU work settles so a
      slow device can never stall an inspection. */
@@ -286,17 +332,6 @@ async function boot() {
     }
     go()
     requestAnimationFrame(go)
-  }
-
-  /* ?only=<section> isolates one section at the top of the page. Used by the
-     screenshot pass so each section can be reviewed without scrolling. */
-  const only = params.get('only')
-  if (only) {
-    document.querySelectorAll('main > section').forEach((section) => {
-      if (section.id !== only) section.style.display = 'none'
-    })
-    const foot = document.querySelector('.foot')
-    if (foot && only !== 'contact') foot.style.display = 'none'
   }
 
   /* ?overflow=1 prints every element wider than the viewport. Layout bugs at

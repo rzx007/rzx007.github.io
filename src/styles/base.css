@@ -122,20 +122,26 @@ p { text-wrap: pretty; }
 
 /* ── reveal primitives ─────────────────────────────────────────── */
 /* Line-mask reveals: .ln clips, .ln > i is the moving element.
+
    Fraunces descenders (g, y, p, and the italic Q tail) run deep at display
-   sizes, so the mask gets generous room below the baseline — the negative
-   margin keeps the visual rhythm identical. */
+   sizes, so the mask is given room below the baseline via --mask-pad — which
+   means the clip box is *taller* than the moving element. The element must
+   therefore travel further than its own height to leave the mask: an element
+   of height L inside a box of L + pad needs L + pad of travel, i.e.
+   (L + pad) / L. Worst case on this page is line-height .82 with pad .3em,
+   which needs 137%, so 140% clears every heading on the site.
+
+   `MASK_OUT` in motion.js is the same number, for the JS-set start state. */
 .ln {
+  --mask-pad: .3em;
   display: block;
   overflow: hidden;
-  padding-bottom: .3em;
-  margin-bottom: -.3em;
+  padding-bottom: var(--mask-pad);
+  margin-bottom: calc(var(--mask-pad) * -1);
 }
 .ln > i { display: block; font-style: normal; }
 
-/* The hide transform already composites these while they animate; a permanent
-   `will-change` on every masked line is an unnecessary hint. */
-.js .ln > i       { transform: translate3d(0, 112%, 0); }
+.js .ln > i       { transform: translate3d(0, 140%, 0); }
 .js [data-rise]   { opacity: 0; transform: translate3d(0, 22px, 0); }
 
 .it { font-style: italic; font-variation-settings: 'opsz' 144, 'wght' 300, 'SOFT' 0, 'WONK' 1; }

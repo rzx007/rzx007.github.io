@@ -145,6 +145,63 @@ hero (that is where the interaction lives), never runs on a
 `prefers-reduced-motion` render, and ignores the opening windows — measuring
 during load would freeze fields before they had painted a single frame.
 
+## Two reveal bugs, and the guard that replaces trusting them
+
+Both of these shipped invisible, and both were hidden by the verification
+method: every screenshot taken during development used `?static=1`, which
+*bypasses the animation entirely* and jumps to the finished state. The animated
+page was never actually rendered.
+
+**1. Three headings had no tween at all.** The work / seed / method `<h2>`s are
+wrapped in `.ln` masks, and the CSS parks their lines at `translate3d(0,140%,0)`
+behind `overflow: hidden`. The no-JS failsafe that would have revealed them is
+cancelled by `.rv-ready` as soon as the module boots — and no tween for them
+existed. They were simply never going to appear. All masked headings now get a
+reveal, `.h2` included.
+
+**2. `yPercent` cannot clear a pixel `y`.** The hero title was revealed with
+`gsap.to(el, { yPercent: 0 })`. The browser converts the CSS percentage
+transform into a pixel matrix, so GSAP reads the start state as `y: 183px` —
+a *different component* — and `yPercent: 0` never touches it. The headline
+stayed pushed out of its mask, showing only a sliver of glyph tops. The
+reveals are now `fromTo` with **both** `yPercent` and `y` pinned to 0.
+
+The related mask arithmetic was wrong too: the mask is padded for Fraunces'
+descenders, so it is *taller* than the line inside it. The line must travel
+`L + pad`, not `L` — the old `112%` did not even reach the clip edge. It is
+now `140%`, which covers the worst case on the page (`.82` line-height with
+`.3em` pad needs `137%`), with the arithmetic written down in both the CSS and
+in `MASK_OUT`.
+
+**The guard.** Because a missed reveal is invisible by construction, the page
+now checks its own invariant: any masked line that is *on screen* while still
+parked below its mask gets forced into place, and the console says so —
+
+```
+[motion] reveal never ran for these lines — forced into view: ['Work,', 'in threes.']
+```
+
+It runs on the GSAP ticker (not a timer) at 3s and 7s. `settleCounters()` does
+the same for the figure count-ups: a number that merely skipped its flourish is
+better than a wrong one, so anything that has not landed is snapped to target.
+
+## A limit of the verification harness
+
+Animation could not be verified reliably here, and that is worth stating
+plainly. Chrome's headless `--virtual-time-budget` frequently does not run
+`requestAnimationFrame` at all in this environment. When rAF is starved, GSAP's
+ticker never advances — so the intro stays at time 0, every `from` tween's
+start state is applied, and the page screenshots *blank*. The same starvation
+is why the WebGPU fields only sometimes appear.
+
+This is why the two reveal bugs above survived so long: the symptom
+(blank hero) and the harness failure (rAF starved) look identical in a
+screenshot. What could be confirmed is recorded in the commits — the seed and
+work sections rendering complete in animated mode, and one hero capture with
+the headline, ledger, CTAs and strip all in place. Everything else rests on the
+code reasoning above plus the runtime guard, and should be confirmed by loading
+the page in a real browser.
+
 ## Verification hooks
 
 | Param | Effect |

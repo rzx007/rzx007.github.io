@@ -21,6 +21,22 @@ export const prefersReduced = () =>
 export const finePointer = () =>
   window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
+/**
+ * How far a masked line sits below its mask before it is revealed.
+ *
+ * Must match `.js .ln > i` in base.css, and must clear the *clip box*, not the
+ * element — the mask is padded for descenders (`--mask-pad`), so an element of
+ * height L has to travel L + pad. 140% covers the worst case on this page
+ * (line-height .82, pad .3em → 137%).
+ *
+ * Reveals are written with `fromTo` and pin *both* `yPercent` and `y` to 0 at
+ * the end. A plain `to(..., { yPercent: 0 })` silently fails here: the browser
+ * converts the CSS percentage transform into a pixel matrix, so GSAP reads the
+ * start state as `y: 183px` and never clears it — the heading stays pushed out
+ * of its mask forever.
+ */
+const MASK_OUT = 140
+
 /* ── smooth scroll ─────────────────────────────────────────────── */
 
 export function createSmoothScroll() {
@@ -81,13 +97,34 @@ function armCounters() {
   })
 }
 
+/**
+ * Belt to the count-up's braces: after `delay` seconds, snap any counter that
+ * has not landed on its target. Runs on the GSAP ticker rather than a timer, so
+ * it holds even when timers are throttled or the page was backgrounded
+ * mid-count — and a figure that is merely *wrong* is worse than one that
+ * skipped its flourish.
+ */
+function settleCounters(selector, delay = 2.2) {
+  gsap.delayedCall(delay, () => {
+    document.querySelectorAll(selector).forEach((node) => {
+      const target = node.dataset.count
+      if (target && node.textContent !== target) {
+        node.textContent = target
+        node.dataset.v = target
+      }
+    })
+  })
+}
+
 /* ── the intro, once the entry screen lifts ────────────────────── */
 
 export function playIntro(nodes) {
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
 
   tl.to('.top', { opacity: 1, duration: .6, ease: 'power2.out' }, 0)
-  tl.to('.hero__title .ln > i', { yPercent: 0, duration: 1.25, stagger: .085 }, .06)
+  tl.fromTo('.hero__title .ln > i',
+    { yPercent: MASK_OUT, y: 0 },
+    { yPercent: 0, y: 0, duration: 1.25, stagger: .085, ease: 'expo.out' }, .06)
   tl.to('.hero__eyebrow, .hero .eyebrow', { opacity: 1, y: 0, duration: .9 }, .34)
   tl.to('.hero__lead', { opacity: 1, y: 0, duration: .9 }, .44)
   tl.to('.hero__cta', { opacity: 1, y: 0, duration: .9 }, .52)
@@ -97,6 +134,7 @@ export function playIntro(nodes) {
       countTo(node, Number(node.dataset.count), .85 + i * .07)
     })
   }, .5)
+  settleCounters('#ledger [data-count]', 2.4)
   tl.from(nodes.heroCells, {
     scaleY: 0, duration: .9, ease: 'power2.out',
     stagger: { each: .008, from: 'start' },
@@ -232,11 +270,12 @@ export function buildDecorativeScenes({ nodes, onChapter }) {
       document.querySelectorAll('#figures [data-count]').forEach((node, i) => {
         countTo(node, Number(node.dataset.count), .9 + i * .06)
       })
+      settleCounters('#figures [data-count]', 2)
     },
   }))
 
   /* ── method ────────────────────────────────────────────────── */
-  gsap.from('.method__aside > *', {
+  gsap.from('.method__aside > .sechead__i, .method__aside > .method__note', {
     opacity: 0, y: 20, duration: .8, ease: 'power2.out', stagger: .07,
     scrollTrigger: { trigger: '.method__grid', start: 'top 78%' },
   })
@@ -252,10 +291,27 @@ export function buildDecorativeScenes({ nodes, onChapter }) {
   })
 
   /* ── outro ─────────────────────────────────────────────────── */
-  gsap.from('.outro__title .ln > i', {
-    yPercent: 112, duration: 1.15, ease: 'expo.out', stagger: .08,
-    scrollTrigger: { trigger: '#contact', start: 'top 70%' },
+  /* Every masked heading on the page, revealed as its section arrives.
+     The work / seed / method <h2>s used to be in the markup but in no tween
+     at all — the CSS kept them at translate3d(0,140%,0) behind overflow:hidden
+     with the no-JS failsafe cancelled, so they simply never appeared. */
+  gsap.utils.toArray('.h2').forEach((heading) => {
+    const lines = heading.querySelectorAll('.ln > i')
+    if (!lines.length) return
+    gsap.fromTo(lines,
+      { yPercent: MASK_OUT, y: 0 },
+      {
+        yPercent: 0, y: 0, duration: 1.15, ease: 'expo.out', stagger: .075,
+        scrollTrigger: { trigger: heading, start: 'top 86%' },
+      })
   })
+
+  gsap.fromTo('.outro__title .ln > i',
+    { yPercent: MASK_OUT, y: 0 },
+    {
+      yPercent: 0, y: 0, duration: 1.15, ease: 'expo.out', stagger: .08,
+      scrollTrigger: { trigger: '#contact', start: 'top 70%' },
+    })
 
   gsap.fromTo('#fieldOutro',
     { yPercent: 2.5 },
@@ -342,6 +398,50 @@ export function replayDerived(nodes) {
     opacity: 1, y: 0, duration: .6, stagger: .07,
   }, .22)
   return tl
+}
+
+/* ── invariant guard ────────────────────────────────────────────── */
+
+/**
+ * A masked line that is *on screen* while still parked below its mask is a bug,
+ * never a design: its reveal did not run — a selector missed it, a timeline was
+ * interrupted, or GSAP could not clear the transform the CSS set.
+ *
+ * This is the guard for the class of bug that shipped the work / seed / method
+ * headings at `translateY(140%)` behind `overflow: hidden` with no tween
+ * attached, so they never appeared at all. Rather than trust that every masked
+ * line has a tween, the page now checks, forces any stragglers into place, and
+ * says so in the console.
+ *
+ * Runs on the GSAP ticker (not a timer) so it holds when timers are throttled.
+ */
+export function guardMaskedHeadings({ at = [3, 7] } = {}) {
+  const forced = new Set()
+
+  const check = () => {
+    document.querySelectorAll('.h2, .hero__title, .outro__title').forEach((heading) => {
+      const box = heading.getBoundingClientRect()
+      if (box.height === 0 || box.width === 0) return          // section is hidden
+      const onScreen = box.top < window.innerHeight * .94 && box.bottom > 0
+      if (!onScreen) return                                    // legitimately parked
+
+      heading.querySelectorAll('.ln > i').forEach((node) => {
+        const matrix = new DOMMatrixReadOnly(getComputedStyle(node).transform)
+        if (Math.abs(matrix.m42) <= 4) return                  // already in place
+        gsap.set(node, { yPercent: 0, y: 0 })
+        forced.add((node.textContent || '').trim().slice(0, 30))
+      })
+    })
+
+    if (forced.size) {
+      // eslint-disable-next-line no-console
+      console.warn('[motion] reveal never ran for these lines — forced into view:', [...forced])
+      document.documentElement.dataset.stuckLines = String(forced.size)
+    }
+  }
+
+  at.forEach((seconds) => gsap.delayedCall(seconds, check))
+  return check
 }
 
 /* ── safety net ────────────────────────────────────────────────── */
