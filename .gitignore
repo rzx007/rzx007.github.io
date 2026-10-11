@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+dist-ssr/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# caches
+.vite/
+.cache/
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.njsproj
+*.sln
+*.sw?
+
+# screenshot / inspection artefacts from the verification pass
+shots/
+*.png
+!docs/**/*.png
+
+# coding-agent session state
+.vykor/

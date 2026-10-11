@@ -1,0 +1,64 @@
+/* ────────────────────────────────────────────────────────────────
+   tokens.css — the whole visual language, in one place.
+   Palette is warm-only: near-black ink, paper bone, one ember accent.
+   No blue, no purple, no gradient decoration.
+   ──────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── palette ────────────────────────────────────────────────── */
+  --ink:       #08090A;
+  --ink-2:     #0D0E0F;
+  --ink-3:     #141516;
+  --bone:      #EFEAE1;
+  --bone-dim:  #B8B2A8;
+  --bone-mute: #8A8479;
+  --ember:     #FF4A1C;
+  --ember-2:   #FF8A4C;
+  --ember-dim: #A8320F;
+  --oxblood:   #6E1D0C;
+  --ash:       #171512;
+
+  --line:      rgba(239, 234, 225, .13);
+  --line-2:    rgba(239, 234, 225, .26);
+  --line-3:    rgba(239, 234, 225, .06);
+
+  /* ── spacing scale (4 → 240) ────────────────────────────────── */
+  --s1: 4px;   --s2: 8px;   --s3: 12px;  --s4: 16px;
+  --s5: 24px;  --s6: 32px;  --s7: 48px;  --s8: 64px;
+  --s9: 96px;  --s10: 128px; --s11: 176px; --s12: 240px;
+
+  /* ── layout ─────────────────────────────────────────────────── */
+  --maxw: 1560px;
+  --gut:  clamp(18px, 4.2vw, 68px);
+  --g:    clamp(16px, 2vw, 32px);
+  --pad-y: clamp(88px, 13vh, 190px);
+
+  /* ── type ───────────────────────────────────────────────────── */
+  --serif: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+  --sans:  'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:  'Azeret Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* ── motion ─────────────────────────────────────────────────── */
+  --ease:     cubic-bezier(.22, .61, .36, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-io:  cubic-bezier(.65, .05, .36, 1);
+  --dur:      .55s;
+
+  /* ── chrome ─────────────────────────────────────────────────── */
+  --topH: 66px;
+  --z-field: 0;
+  --z-content: 10;
+  --z-top: 900;
+  --z-cursor: 9500;
+  --z-pre: 9800;
+}
+
+/* Variable-font axes we drive with GSAP. Registered so the browser
+   interpolates them and GSAP can tween them as plain numbers. */
+@property --wght { syntax: '<number>'; inherits: true; initial-value: 300; }
+@property --opsz { syntax: '<number>'; inherits: true; initial-value: 120; }
+@property --temp { syntax: '<number>'; inherits: true; initial-value: 6; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: .001s; }
+}

@@ -1,0 +1,14 @@
+# Normalise line endings in the repository; keep them as-is on checkout.
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.woff binary
+*.woff2 binary
+
+# Generated lockfile — do not diff
+package-lock.json -diff linguist-generated

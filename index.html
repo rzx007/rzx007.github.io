@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tobias Quill — Creative developer</title>
+<meta name="description" content="Independent creative developer. Type systems, motion and interfaces. Every number on this page is read off a 96-character random seed." />
+<meta name="theme-color" content="#08090A" />
+<meta name="color-scheme" content="dark" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Azeret+Mono:wght@100..900&display=swap" />
+
+<link rel="stylesheet" href="/src/styles/tokens.css" />
+<link rel="stylesheet" href="/src/styles/base.css" />
+<link rel="stylesheet" href="/src/styles/chrome.css" />
+<link rel="stylesheet" href="/src/styles/sections.css" />
+
+<script type="module" src="/src/main.js"></script>
+</head>
+
+<body>
+<a class="skip" href="#work">Skip to work</a>
+
+<!-- ── global overlays ─────────────────────────────────────────── -->
+<div class="grain" aria-hidden="true"></div>
+
+<div class="cursor" id="cursor" aria-hidden="true">
+  <span class="cursor__dot"></span>
+  <span class="cursor__ring"></span>
+  <span class="cursor__label" id="cursorLabel"></span>
+</div>
+
+<!-- ── entry ───────────────────────────────────────────────────── -->
+<div class="pre" id="pre" role="status" aria-live="polite" aria-label="Loading">
+  <div class="pre__inner">
+    <div class="pre__head">
+      <span class="mono">SEED 96</span>
+      <span class="mono pre__count" id="preCount">00</span>
+    </div>
+    <div class="strip strip--loader" id="preStrip" aria-hidden="true"></div>
+    <p class="pre__note mono" id="preNote">deriving art direction</p>
+  </div>
+</div>
+
+<!-- ── header ──────────────────────────────────────────────────── -->
+<header class="top" id="top">
+  <a class="mark" href="#top" data-cursor="TOP" aria-label="Tobias Quill, back to top">
+    <span class="mark__tq">TQ</span>
+    <span class="mark__dot" aria-hidden="true"></span>
+  </a>
+
+  <nav class="nav" aria-label="Sections">
+    <a href="#work"    data-cursor="01">Work<span class="nav__n">333</span></a>
+    <a href="#seed"    data-cursor="02">Seed<span class="nav__n">472</span></a>
+    <a href="#method"  data-cursor="03">Method<span class="nav__n">946</span></a>
+    <a href="#contact" data-cursor="04">Contact<span class="nav__n">98</span></a>
+  </nav>
+
+  <div class="top__end">
+    <button class="reroll" id="rerollTop" type="button" data-cursor="ROLL" aria-label="Generate a new seed and re-derive the page">
+      <span class="reroll__txt">RE-ROLL</span>
+      <kbd class="reroll__key">R</kbd>
+    </button>
+  </div>
+</header>
+
+<!-- ── rail ────────────────────────────────────────────────────── -->
+<aside class="rail" id="rail" aria-hidden="true">
+  <span class="rail__ch mono" id="railCh">956</span>
+  <span class="rail__bar"><i id="railFill"></i></span>
+  <span class="rail__temp mono" id="railTemp">TEMP 6.7</span>
+</aside>
+
+<main>
+<!-- ── 956 · hero ──────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="field field--hero" id="fieldHero" data-field="hero">
+    <canvas class="field__c" id="canvasHero" aria-hidden="true"></canvas>
+    <div class="field__fb" aria-hidden="true"></div>
+  </div>
+
+  <div class="wrap hero__grid">
+    <p class="eyebrow mono" data-rise>Independent creative developer<span class="sep">·</span>Seed 96</p>
+
+    <h1 class="hero__title" id="heroTitle">
+      <span class="ln"><i>Tobias</i></span>
+      <span class="ln"><i class="it">Quill</i></span>
+    </h1>
+
+    <p class="hero__lead" data-rise>
+      I design and build the parts of the web you can't fake: type systems, motion,
+      and interfaces that hold up under a real cursor.
+    </p>
+
+    <div class="hero__cta" data-rise>
+      <a class="btn" href="#work" data-cursor="01"><span class="btn__t">See the work</span><span class="btn__i" aria-hidden="true">↓</span></a>
+      <a class="btn btn--ghost" href="#seed" data-cursor="02"><span class="btn__t">Read the seed</span><span class="btn__i" aria-hidden="true">↓</span></a>
+    </div>
+
+    <dl class="ledger" id="ledger" aria-label="Seed statistics">
+      <div class="ledger__r"><dt class="mono">Characters</dt><dd class="num" data-count="96">96</dd></div>
+      <div class="ledger__r"><dt class="mono">Letters</dt><dd class="num" data-count="82">82</dd></div>
+      <div class="ledger__r"><dt class="mono">Digits</dt><dd class="num" data-count="14">14</dd></div>
+      <div class="ledger__r"><dt class="mono">Unpaired Q</dt><dd class="num" data-count="6">6</dd></div>
+    </dl>
+  </div>
+
+  <div class="wrap hero__foot">
+    <div class="strip" id="heroStrip" aria-hidden="true"></div>
+    <div class="hero__metarow">
+      <span class="mono" id="heroStripCap">96 cells — case as signal</span>
+      <span class="mono hero__cue"><i aria-hidden="true"></i>Scroll</span>
+      <span class="mono">Chapter 956<span class="sep">·</span>Temp 6.7</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── 333 · work ──────────────────────────────────────────────── -->
+<section class="work" id="work">
+  <div class="wrap work__intro">
+    <div class="sechead">
+      <span class="mono sechead__i" id="workCh">333</span>
+      <h2 class="h2"><span class="ln"><i>Work,</i></span> <span class="ln"><i>in threes.</i></span></h2>
+    </div>
+    <p class="lead work__lede" data-rise>
+      Three projects, chosen because each one needed a system rather than a screen.
+    </p>
+  </div>
+
+  <div class="work__stage" id="workStage">
+    <div class="work__track" id="workTrack">
+
+      <article class="card" data-cursor="VIEW" data-card>
+        <div class="field field--card"><canvas class="field__c" aria-hidden="true" data-canvas="w1"></canvas><div class="field__fb" aria-hidden="true"></div></div>
+        <div class="card__in">
+          <span class="card__n mono">01</span>
+          <div class="card__b">
+            <h3 class="card__t">Halide</h3>
+            <p class="card__s mono">Identity &amp; web platform · Independent photo lab</p>
+          </div>
+        </div>
+        <div class="card__m">
+          <span class="mono">2024</span>
+          <span class="mono">Identity · Design engineering</span>
+          <span class="mono card__k">+41% return visits</span>
+        </div>
+      </article>
+
+      <article class="card" data-cursor="VIEW" data-card>
+        <div class="field field--card"><canvas class="field__c" aria-hidden="true" data-canvas="w2"></canvas><div class="field__fb" aria-hidden="true"></div></div>
+        <div class="card__in">
+          <span class="card__n mono">02</span>
+          <div class="card__b">
+            <h3 class="card__t">Meridian</h3>
+            <p class="card__s mono">Editorial platform · Climate research journal</p>
+          </div>
+        </div>
+        <div class="card__m">
+          <span class="mono">2025</span>
+          <span class="mono">Typography · Front-end</span>
+          <span class="mono card__k">1.2M words indexed</span>
+        </div>
+      </article>
+
+      <article class="card" data-cursor="VIEW" data-card>
+        <div class="field field--card"><canvas class="field__c" aria-hidden="true" data-canvas="w3"></canvas><div class="field__fb" aria-hidden="true"></div></div>
+        <div class="card__in">
+          <span class="card__n mono">03</span>
+          <div class="card__b">
+            <h3 class="card__t">Nightshift</h3>
+            <p class="card__s mono">Product interface &amp; motion language · Fragrance house</p>
+          </div>
+        </div>
+        <div class="card__m">
+          <span class="mono">2025</span>
+          <span class="mono">Interface · Motion</span>
+          <span class="mono card__k">3.4× dwell time</span>
+        </div>
+      </article>
+
+      <div class="card card--end" aria-hidden="true">
+        <div class="card__endwrap">
+          <span class="mono">End of index</span>
+          <span class="h3">Three<span class="sep">/</span>Three</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="wrap work__hint"><span class="mono">Scroll to pan →</span></div>
+</section>
+
+<!-- ── 472 · seed ──────────────────────────────────────────────── -->
+<section class="seed" id="seed">
+  <div class="wrap seed__top">
+    <div class="sechead">
+      <span class="mono sechead__i" id="seedCh">472</span>
+      <h2 class="h2"><span class="ln"><i>Nothing here</i></span> <span class="ln"><i>was chosen.</i></span></h2>
+    </div>
+
+    <div class="seed__copy">
+      <p class="lead" data-rise>
+        This page began as ninety-six random characters. The five chapters, the three
+        projects, the way it heats up as you scroll — all of it is read off that string.
+      </p>
+      <p data-rise id="seedStory"></p>
+      <p data-rise id="seedQ"></p>
+      <p data-rise>
+        Re-roll it and the page rebuilds itself: new chapters, new temperatures, new
+        colours in the GPU fields. Nothing is stored. Nothing is saved.
+      </p>
+    </div>
+
+    <dl class="figures" id="figures" aria-label="Derived figures">
+      <div class="figures__r"><dt class="mono">Characters</dt><dd class="num" data-count="96">96</dd></div>
+      <div class="figures__r"><dt class="mono">Digit sum</dt><dd class="num" data-count="78">78</dd></div>
+      <div class="figures__r"><dt class="mono">Digits</dt><dd class="num" data-count="14">14</dd></div>
+      <div class="figures__r"><dt class="mono">Unpaired Q</dt><dd class="num" data-count="6">6</dd></div>
+      <div class="figures__r"><dt class="mono">Longest repeat</dt><dd class="num" data-count="3">3</dd></div>
+    </dl>
+  </div>
+
+  <div class="wrap seed__stripwrap">
+    <div class="stripbox">
+      <div class="strip strip--big" id="seedStrip" aria-hidden="true"></div>
+      <div class="strip__marks" id="seedMarks" aria-hidden="true"></div>
+    </div>
+    <p class="strip__cap mono" id="stripCap">96 cells · height = case, ember = digit</p>
+  </div>
+
+  <div class="wrap seed__textwrap">
+    <p class="seedtext mono" id="seedText" data-seed="bdbkdbNh95NRtgLRzL6NQLeUHdQJac3vsL3WbtmrkQ3DmSRaHtoyVNtsRcq4VXKomtQozXg7T2VZM9dQJnEYZKbCZ46nd98m">bdbkdbNh95NRtgLRzL6NQLeUHdQJac3vsL3WbtmrkQ3DmSRaHtoyVNtsRcq4VXKomtQozXg7T2VZM9dQJnEYZKbCZ46nd98m</p>
+  </div>
+
+  <div class="wrap seed__heat">
+    <div class="heat__head">
+      <span class="mono">Fourteen digits, read as temperature</span>
+      <span class="mono heat__sum" id="heatSum">Sum 78</span>
+    </div>
+    <div class="heat" id="heat" aria-hidden="true"></div>
+    <div class="chapters" id="chapters"></div>
+  </div>
+</section>
+
+<!-- ── 946 · method ────────────────────────────────────────────── -->
+<section class="method" id="method">
+  <div class="wrap method__grid">
+    <div class="method__aside">
+      <span class="mono sechead__i" id="methodCh">946</span>
+      <h2 class="h2"><span class="ln"><i>Five</i></span> <span class="ln"><i>principles.</i></span></h2>
+      <p class="mono method__note">Held to on every project, without exception.</p>
+    </div>
+
+    <ol class="rows" id="rows">
+      <li class="row" data-cursor="01">
+        <span class="row__n mono">01</span>
+        <div class="row__body">
+          <h3 class="row__t">Read the material first.</h3>
+          <p class="row__p">Before a single layout I spend time inside whatever the project is actually made of: the archive, the instrument, the catalogue, the codebase.</p>
+        </div>
+      </li>
+      <li class="row" data-cursor="02">
+        <span class="row__n mono">02</span>
+        <div class="row__body">
+          <h3 class="row__t">Systems before screens.</h3>
+          <p class="row__p">Type scale, spacing, colour and motion decided once, written down, and then used without exception. Screens are the output, not the process.</p>
+        </div>
+      </li>
+      <li class="row" data-cursor="03">
+        <span class="row__n mono">03</span>
+        <div class="row__body">
+          <h3 class="row__t">Motion is a measurement.</h3>
+          <p class="row__p">If an animation isn't telling you where you are, how fast you got there, or what just changed, it's decoration. I keep the ones that measure.</p>
+        </div>
+      </li>
+      <li class="row" data-cursor="04">
+        <span class="row__n mono">04</span>
+        <div class="row__body">
+          <h3 class="row__t">Type is the interface.</h3>
+          <p class="row__p">Most products are read long before they're clicked. Treating the text as the primary control is usually the difference between clear and merely pretty.</p>
+        </div>
+      </li>
+      <li class="row" data-cursor="05">
+        <span class="row__n mono">05</span>
+        <div class="row__body">
+          <h3 class="row__t">Ship the whole thing.</h3>
+          <p class="row__p">Design that stops at a handoff leaves half the work undone. I write the shaders, tune the easing and push the build myself.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="wrap method__tools">
+    <span class="mono tools__l">Working with</span>
+    <ul class="chips" id="chips">
+      <li class="mono">WebGPU · WGSL</li>
+      <li class="mono">Variable type</li>
+      <li class="mono">GSAP · ScrollTrigger</li>
+      <li class="mono">React · Vue</li>
+      <li class="mono">Design systems</li>
+      <li class="mono">Prototyping</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── 98 · contact ────────────────────────────────────────────── -->
+<section class="outro" id="contact">
+  <div class="field field--outro" id="fieldOutro" data-field="outro">
+    <canvas class="field__c" id="canvasOutro" aria-hidden="true"></canvas>
+    <div class="field__fb" aria-hidden="true"></div>
+  </div>
+
+  <div class="wrap outro__grid">
+    <span class="mono sechead__i" id="outroCh">98</span>
+    <h2 class="outro__title">
+      <span class="ln"><i>Have something that</i></span>
+      <span class="ln"><i>doesn't fit a template?</i></span>
+    </h2>
+
+    <div class="outro__cta">
+      <button class="mail" id="mail" type="button" data-cursor="COPY" aria-label="Copy email address mail@tobiasquill.com">
+        <span class="mail__t">mail@tobiasquill.com</span>
+        <span class="mail__h mono" id="mailHint">Click to copy</span>
+      </button>
+      <p class="outro__avail"><i class="dot" aria-hidden="true"></i>Taking on two projects for Q2 2026.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ── footer ──────────────────────────────────────────────────── -->
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div class="foot__col">
+      <span class="mono foot__k">Colophon</span>
+      <p class="mono foot__v">Field — WebGPU via <em>shaders</em><br />Motion — GSAP ScrollTrigger<br />Scroll — Lenis<br />Type — Fraunces, Instrument Sans, Azeret Mono</p>
+    </div>
+    <div class="foot__col foot__col--wide">
+      <span class="mono foot__k">Seed</span>
+      <p class="mono foot__seed" id="footSeed">bdbkdbNh95NRtgLRzL6NQLeUHdQJac3vsL3WbtmrkQ3DmSRaHtoyVNtsRcq4VXKomtQozXg7T2VZM9dQJnEYZKbCZ46nd98m</p>
+      <button class="reroll reroll--foot" id="rerollFoot" type="button" data-cursor="ROLL">
+        <span class="reroll__txt">Re-roll the seed</span>
+        <kbd class="reroll__key">R</kbd>
+      </button>
+    </div>
+    <div class="foot__col">
+      <span class="mono foot__k">Notes</span>
+      <p class="mono foot__v" id="footNotes">© 2026 Tobias Quill<br />Built from 96 random characters<br /><span id="gpuNote">WebGPU field active</span></p>
+    </div>
+  </div>
+</footer>
+
+<noscript>
+  <style>
+    .pre, .cursor, .rail, .grain { display: none !important; }
+    [data-rise], .ln > i { opacity: 1 !important; transform: none !important; }
+  </style>
+</noscript>
+</body>
+</html>

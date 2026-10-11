@@ -1,0 +1,281 @@
+/* ────────────────────────────────────────────────────────────────
+   base.css — reset, typography, shared primitives.
+   ──────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;            /* Lenis owns scrolling */
+  overscroll-behavior-y: none;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--sans);
+  font-size: clamp(.95rem, .35vw + .86rem, 1.0625rem);
+  line-height: 1.58;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Nothing may widen the document: mono strings that cannot break, and the
+   96-column strip, are the usual suspects. Clipping horizontally would hide
+   real content, so `clip` is the backstop, not the fix. */
+main { overflow-x: clip; }
+
+h1, h2, h3, p, dl, dd, dt, ol, ul, figure { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+img, canvas { display: block; max-width: 100%; }
+
+::selection { background: var(--ember); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 3px;
+}
+
+/* scrollbar — thin, warm, quiet */
+html { scrollbar-color: #2A2724 var(--ink); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: #2A2724; border: 4px solid var(--ink); }
+::-webkit-scrollbar-thumb:hover { background: var(--ember-dim); }
+
+/* ── layout helpers ─────────────────────────────────────────────── */
+.wrap {
+  width: 100%;
+  max-width: min(var(--maxw), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.skip {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  transform: translateY(-120%);
+  background: var(--bone); color: var(--ink);
+  padding: 12px 18px;
+  font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+  text-decoration: none;
+  transition: transform .2s var(--ease);
+}
+.skip:focus { transform: translateY(0); }
+
+.sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ── type primitives ───────────────────────────────────────────── */
+.mono {
+  font-family: var(--mono);
+  font-size: clamp(9.5px, .16vw + 9.2px, 11px);
+  font-weight: 400;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+
+.sep { color: var(--ember); padding-inline: .5em; }
+
+.h2 {
+  font-family: var(--serif);
+  font-variation-settings: 'opsz' 96, 'wght' 300, 'SOFT' 0, 'WONK' 0;
+  font-size: clamp(2.15rem, 5.6vw, 4.9rem);
+  line-height: .94;
+  letter-spacing: -.024em;
+  text-wrap: balance;
+}
+
+.h3 {
+  font-family: var(--serif);
+  font-variation-settings: 'opsz' 40, 'wght' 400, 'SOFT' 0, 'WONK' 0;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -.018em;
+}
+
+.lead {
+  font-size: clamp(1.05rem, .7vw + .88rem, 1.4rem);
+  line-height: 1.46;
+  letter-spacing: -.008em;
+  color: var(--bone-dim);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+p { text-wrap: pretty; }
+
+.num {
+  font-family: var(--serif);
+  font-variation-settings: 'opsz' 72, 'wght' 320, 'SOFT' 0, 'WONK' 0;
+  font-size: clamp(1.7rem, 2.9vw, 2.7rem);
+  line-height: 1;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--bone);
+}
+
+/* ── reveal primitives ─────────────────────────────────────────── */
+/* Line-mask reveals: .ln clips, .ln > i is the moving element.
+   Fraunces descenders (g, y, p, and the italic Q tail) run deep at display
+   sizes, so the mask gets generous room below the baseline — the negative
+   margin keeps the visual rhythm identical. */
+.ln {
+  display: block;
+  overflow: hidden;
+  padding-bottom: .3em;
+  margin-bottom: -.3em;
+}
+.ln > i { display: block; font-style: normal; }
+
+/* The hide transform already composites these while they animate; a permanent
+   `will-change` on every masked line is an unnecessary hint. */
+.js .ln > i       { transform: translate3d(0, 112%, 0); }
+.js [data-rise]   { opacity: 0; transform: translate3d(0, 22px, 0); }
+
+.it { font-style: italic; font-variation-settings: 'opsz' 144, 'wght' 300, 'SOFT' 0, 'WONK' 1; }
+
+/* Failsafe: if the module never runs, CSS reveals the page anyway.
+   `.rv-ready` (set by JS as soon as GSAP owns the states) cancels it. */
+@keyframes rvFail { to { opacity: 1; transform: none; } }
+@keyframes lnFail { to { transform: none; } }
+
+.js:not(.rv-ready) .ln > i     { animation: lnFail 0s linear 3.4s forwards; }
+.js:not(.rv-ready) [data-rise] { opacity: 0; animation: rvFail 0s linear 3.4s forwards; }
+
+/* ── buttons ───────────────────────────────────────────────────── */
+.btn {
+  --h: 52px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--h);
+  padding-inline: 22px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--bone);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color .35s var(--ease), border-color .35s var(--ease);
+}
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--ember);
+  transform: translateY(101%);
+  transition: transform .48s var(--ease-out);
+  z-index: 0;
+}
+.btn__t, .btn__i { position: relative; z-index: 1; }
+.btn:hover, .btn:focus-visible { color: var(--ink); border-color: var(--ember); }
+.btn:hover::after, .btn:focus-visible::after { transform: translateY(0); }
+.btn__i { transition: transform .45s var(--ease-out); }
+.btn:hover .btn__i { transform: translateY(3px); }
+.btn--ghost { border-color: var(--line); color: var(--bone-dim); }
+.btn--ghost:hover { color: var(--ink); }
+
+/* ── ledgers (label ⇄ number rows) ─────────────────────────────── */
+.ledger__r, .figures__r {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding-block: 11px;
+  border-bottom: 1px solid var(--line);
+}
+.ledger__r:first-child, .figures__r:first-child { border-top: 1px solid var(--line); }
+.ledger__r dt, .figures__r dt { color: var(--bone-mute); }
+
+/* ── the 96-cell strip ─────────────────────────────────────────── */
+.strip {
+  display: grid;
+  grid-auto-flow: column;
+  /* `minmax(0, 1fr)`, never bare `1fr`: the columns must be allowed to
+     collapse to nothing, or the strip forces the document wider than the
+     screen and everything to its right gets clipped. */
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(1px, .28vw, 3px);
+  height: 38px;
+  width: 100%;
+  min-width: 0;
+}
+.strip__c {
+  height: var(--h, 30%);
+  background: var(--c, var(--bone-mute));
+  transform-origin: bottom;
+}
+.strip--loader { height: 46px; }
+.strip--big    { height: clamp(56px, 8vw, 104px); gap: clamp(1px, .34vw, 4px); }
+
+.strip__marks { position: absolute; inset: 0; pointer-events: none; }
+.mark {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--ember);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+.mark b {
+  position: absolute;
+  top: -19px; left: 50%;
+  transform: translateX(-50%);
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: .1em;
+  color: var(--ember);
+  background: var(--ink);
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+/* ── GPU field wrapper ───────────────────────────────────────────
+   The vignette is a CSS gradient rather than a Vignette component: it is
+   indistinguishable at these intensities and costs no render pass. */
+.field {
+  --vig: 40%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ink);
+}
+.field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(118% 96% at 50% 46%, transparent var(--vig), rgba(8, 9, 10, .62) 100%);
+}
+.field__c { width: 100%; height: 100%; }
+.field__fb { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+
+/* Fallback field, shown only when WebGPU is unavailable. */
+.no-gpu .field__c { display: none; }
+.no-gpu .field__fb {
+  opacity: 1;
+  background:
+    radial-gradient(120% 92% at 74% 30%, rgba(255, 74, 28, .40), transparent 62%),
+    radial-gradient(96% 78% at 14% 88%, rgba(110, 29, 12, .58), transparent 66%),
+    linear-gradient(158deg, #170704 0%, #08090A 64%);
+  animation: fbDrift 30s var(--ease-io) infinite alternate;
+}
+.no-gpu .field__fb::after {
+  content: '';
+  position: absolute; inset: -30%;
+  background-image: repeating-linear-gradient(0deg, var(--line-3) 0 1px, transparent 1px 7px);
+  mix-blend-mode: overlay;
+}
+@keyframes fbDrift {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to   { transform: scale(1.16) translate3d(-2.5%, -1.5%, 0); }
+}
