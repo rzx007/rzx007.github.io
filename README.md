@@ -1,5 +1,7 @@
 # Tobias Quill — a personal page derived from a random string
 
+**Live:** https://rzx007.github.io/tobias-quill/
+
 A personal site whose entire art direction is *read off* a 96-character random
 string. The seed was generated with a shell one-liner:
 
@@ -29,6 +31,24 @@ npm run preview
 
 Needs a WebGPU browser (Chrome/Edge 113+). Without it the page falls back to
 CSS-rendered fields in the same palette, and the colophon says so.
+
+## Deploy
+
+GitHub Pages, built in CI from `.github/workflows/deploy.yml` on every push to
+`main`. `dist/` stays gitignored, so the repository only ever holds source and
+there is no `gh-pages` branch — Pages is configured with `build_type: workflow`
+and receives the build as an artifact.
+
+One thing to know if you fork or rename this: it is a *project* Pages site, so
+it is served from `/<repo>/` rather than the domain root, and Vite emits
+absolute `/assets/...` paths by default — which 404 there. `base` in
+`vite.config.js` is therefore set to `/<repo>/`, and **only for builds**, so
+`npm run dev` still serves from `/`. Rename the repository and that string has
+to move with it.
+
+The lazy WebGPU chunk is the canary for this: it is a dynamic import, so it is
+not referenced in `index.html`, and a wrong `base` shows up as a 404 on
+`/assets/shaders-*.js` at runtime rather than as a broken first paint.
 
 ## What the seed actually says
 
