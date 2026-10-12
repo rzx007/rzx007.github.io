@@ -126,7 +126,7 @@ body.is-scrolled .top::after { opacity: 1; }
   text-decoration: none;
   color: var(--bone);
 }
-.mark__tq {
+.mark__id {
   font-family: var(--serif);
   font-style: italic;
   font-variation-settings: 'opsz' 72, 'wght' 400, 'SOFT' 0, 'WONK' 1;

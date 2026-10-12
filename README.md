@@ -1,9 +1,10 @@
-# Tobias Quill — a personal page derived from a random string
+# rzx007 — a personal page derived from a random string
 
 **Live:** https://rzx007.github.io/tobias-quill/
 
-A personal site whose entire art direction is *read off* a 96-character random
-string. The seed was generated with a shell one-liner:
+A personal site for a senior front-end / full-stack engineer working on AI.
+Its entire art direction is *read off* a 96-character random string. The seed was
+generated with a shell one-liner:
 
 ```bash
 # 96 random alphanumerics (no ambiguous I/O/l/0/1)
@@ -49,6 +50,22 @@ to move with it.
 The lazy WebGPU chunk is the canary for this: it is a dynamic import, so it is
 not referenced in `index.html`, and a wrong `base` shows up as a 404 on
 `/assets/shaders-*.js` at runtime rather than as a broken first paint.
+
+## Placeholder copy — replace before sharing widely
+
+Two things on the page are written for you rather than derived, and both are
+meant to be edited:
+
+- **The three projects** (`Relay` / `Recall` / `Kestrel`) are realistic
+  placeholders with plausible metrics, not a record of work that exists. Swap in
+  real projects — or delete cards — in `index.html`, and keep the
+  `data-canvas="w1|w2|w3"` attributes if you want to keep the GPU fields.
+- **The availability line** in the close reads *“Open to senior front-end and
+  AI platform work.”* Change it if that is not true yet.
+
+Everything else — the five chapters, the temperatures, the strip, the heat
+trace, the shader palettes, most of the prose — is computed from the seed and
+will follow it when you re-roll.
 
 ## What the seed actually says
 

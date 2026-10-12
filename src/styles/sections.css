@@ -37,7 +37,19 @@
 
 .eyebrow { grid-area: eyebrow; color: var(--bone-dim); }
 .hero__title { grid-area: title; }
-.hero__lead { grid-area: lead; }
+/* The hero lead is the primary statement, but it never carried the `.lead`
+   class, so it had no measure at all and stretched the full column — one very
+   long line that read like a caption and wrapped unpredictably at narrower
+   widths. Given an explicit measure and tone instead. */
+.hero__lead {
+  grid-area: lead;
+  max-width: 46ch;
+  font-size: clamp(1.05rem, .7vw + .88rem, 1.4rem);
+  line-height: 1.46;
+  letter-spacing: -.008em;
+  color: var(--bone-dim);
+  text-wrap: pretty;
+}
 .hero__cta { grid-area: cta; }
 
 .hero__title {

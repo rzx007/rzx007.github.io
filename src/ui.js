@@ -168,7 +168,7 @@ export function initCopyMail() {
       selection.addRange(range)
       say('Selected — press Ctrl+C', true)
     } catch {
-      say('Write to mail@tobiasquill.com', false)
+      say('Write to zerotoherorzx@gmail.com', false)
     }
   })
 }
