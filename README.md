@@ -1,6 +1,6 @@
 # rzx007 — a personal page derived from a random string
 
-**Live:** https://rzx007.github.io/tobias-quill/
+**Live:** https://rzx007.github.io/
 
 A personal site for a senior front-end / full-stack engineer working on AI.
 Its entire art direction is *read off* a 96-character random string. The seed was
@@ -40,28 +40,31 @@ GitHub Pages, built in CI from `.github/workflows/deploy.yml` on every push to
 there is no `gh-pages` branch — Pages is configured with `build_type: workflow`
 and receives the build as an artifact.
 
-One thing to know if you fork or rename this: it is a *project* Pages site, so
-it is served from `/<repo>/` rather than the domain root, and Vite emits
-absolute `/assets/...` paths by default — which 404 there. `base` in
-`vite.config.js` is therefore set to `/<repo>/`, and **only for builds**, so
-`npm run dev` still serves from `/`. Rename the repository and that string has
-to move with it.
+The repository is named `rzx007.github.io`, which makes it a GitHub *user* site
+served from the domain root (`https://rzx007.github.io/`), so `base` is `/`.
+The other shape — a *project* site, served from `/<repo>/` — needs
+`base: '/<repo>/'`, because Vite emits absolute `/assets/...` paths which would
+404 under a subpath. Both cases are spelled out in `vite.config.js`.
 
-The lazy WebGPU chunk is the canary for this: it is a dynamic import, so it is
-not referenced in `index.html`, and a wrong `base` shows up as a 404 on
+The lazy WebGPU chunk is the canary for a wrong `base`: it is a dynamic import,
+so it is not referenced in `index.html`, and a bad prefix shows up as a 404 on
 `/assets/shaders-*.js` at runtime rather than as a broken first paint.
 
-## Placeholder copy — replace before sharing widely
+## The three cards are system archetypes, not case studies
 
-Two things on the page are written for you rather than derived, and both are
-meant to be edited:
+The `Systems` section describes three shapes of problem — retrieval, a model
+gateway, agent tooling — rather than claiming specific projects. That is
+deliberate: nothing on this page asserts work that exists, so there are no
+invented client names and no invented metrics to be caught out by.
 
-- **The three projects** (`Relay` / `Recall` / `Kestrel`) are realistic
-  placeholders with plausible metrics, not a record of work that exists. Swap in
-  real projects — or delete cards — in `index.html`, and keep the
-  `data-canvas="w1|w2|w3"` attributes if you want to keep the GPU fields.
-- **The availability line** in the close reads *“Open to senior front-end and
-  AI platform work.”* Change it if that is not true yet.
+If you have real projects to show, that is an upgrade. Replace the card titles,
+subtitles and meta rows in `index.html`, keep the `data-canvas="w1|w2|w3"`
+attributes to keep the matching GPU fields, and consider retitling the section
+back to `Work` (also in the header nav, the skip link, and the hero button).
+
+The other line written for you rather than derived is the one under the email:
+*“Happy to talk about AI products and hard interface problems.”* Change it if
+you would rather signal availability.
 
 Everything else — the five chapters, the temperatures, the strip, the heat
 trace, the shader palettes, most of the prose — is computed from the seed and

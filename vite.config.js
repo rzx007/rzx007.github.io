@@ -1,17 +1,21 @@
 import { defineConfig } from 'vite'
 
 /**
- * `base` matters: this is a *project* Pages site, so it is served from
- * https://<user>.github.io/<repo>/ rather than the domain root. Vite's built
- * output references assets absolutely (/assets/…), which would 404 there.
+ * GitHub Pages comes in two shapes, and `base` differs between them:
  *
- * Local dev stays on '/' so `npm run dev` is unchanged; only the build gets the
- * prefix. If the repository is ever renamed, this string must change with it.
+ *   user site     repo named `<user>.github.io` → served from the domain root,
+ *                 so assets are referenced from `/`.          ← this one
+ *   project site  any other repo → served from `/<repo>/`, so `base` must be
+ *                 `/<repo>/` or every asset 404s.
+ *
+ * This is the user-site case, served from https://rzx007.github.io/.
+ * If the repository is ever renamed to something that is not
+ * `<user>.github.io`, set BASE to `/<new-repo>/`.
  */
-const REPO = 'tobias-quill'
+const BASE = '/'
 
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? `/${REPO}/` : '/',
+export default defineConfig({
+  base: BASE,
 
   server: {
     host: '127.0.0.1',
@@ -30,4 +34,4 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
-}))
+})
